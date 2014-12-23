@@ -51,7 +51,7 @@ class Operation(object):
             stacks = self._make_api_call('opsworks', 'DescribeStacks')['Stacks']
             for stack in stacks:
                 stack_id = stack['StackId']
-                if self.stack_name == stack['Name'].lower():
+                if self.stack_name == stack['Name']:
                     self._stack_id = stack_id
                     break
             else:
@@ -65,7 +65,7 @@ class Operation(object):
             layers = self._make_api_call('opsworks', 'DescribeLayers', stack_id=self.stack_id)['Layers']
             for each_layer in layers:
                 layer_id = each_layer['LayerId']
-                if self.layer_name == each_layer['Name'].lower():
+                if self.layer_name == each_layer['Name']:
                     self._layer_id = layer_id
                     break
             else:
