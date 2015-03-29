@@ -417,7 +417,7 @@ def deploy(ctx, application):
     operation.application_name = application
     ctx.obj['OPERATION'] = operation
 
-@cli.command(help='Deploys an application')
+@cli.command(help='Rollback deploy an application')
 @click.option('--application', type=click.STRING, required=True, help='OpsWorks Application')
 @click.pass_context
 def rollback(ctx, application):
@@ -425,7 +425,7 @@ def rollback(ctx, application):
     operation.application_name = application
     ctx.obj['OPERATION'] = operation
 
-@cli.command(help='Deploys an application')
+@cli.command(help='Execute a recipe')
 @click.option('--recipe', type=click.STRING, required=True, help='OpsWorks Recipe')
 @click.pass_context
 def execute_recipe(ctx, recipe):
