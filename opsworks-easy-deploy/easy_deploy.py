@@ -336,6 +336,52 @@ class Deploy(Operation):
         }
 
 
+class Rollback(Deploy):
+    """
+    Used to issue a Deployment operation within OpsWorks
+    """
+    def __init__(self, context):
+        self.application_name = None
+        self._application_id = None
+
+        super(Rollback, self).__init__(context)
+
+    @property
+    def command(self):
+        return 'rollback'
+
+    def _create_deployment_arguments(self, instance_ids, comment):
+        return {
+            'stack_id': self.stack_id,
+            'app_id': self.application_id,
+            'instance_ids': instance_ids,
+            'command': {'Name': self.command},
+            'comment': comment
+        }
+
+
+class ExecuteRecipe(Operation):
+    """
+    Used to issue a Deployment operation within OpsWorks
+    """
+    def __init__(self, context):
+        self.recipe_name = None
+
+        super(ExecuteRecipe, self).__init__(context)
+
+    @property
+    def command(self):
+        return 'execute_recipes'
+
+    def _create_deployment_arguments(self, instance_ids, comment):
+        return {
+            'stack_id': self.stack_id,
+            'instance_ids': instance_ids,
+            'command': {'Name': self.command, "Args": {"recipes": [self.recipe_name]}},
+            'comment': comment
+        }
+
+
 def log(message):
     click.echo("[{0}] {1}".format(arrow.utcnow().format('YYYY-MM-DD HH:mm:ss ZZ'), message))
 
@@ -371,6 +417,21 @@ def deploy(ctx, application):
     operation.application_name = application
     ctx.obj['OPERATION'] = operation
 
+@cli.command(help='Deploys an application')
+@click.option('--application', type=click.STRING, required=True, help='OpsWorks Application')
+@click.pass_context
+def rollback(ctx, application):
+    operation = Rollback(ctx)
+    operation.application_name = application
+    ctx.obj['OPERATION'] = operation
+
+@cli.command(help='Deploys an application')
+@click.option('--recipe', type=click.STRING, required=True, help='OpsWorks Recipe')
+@click.pass_context
+def execute_recipe(ctx, recipe):
+    operation = ExecuteRecipe(ctx)
+    operation.recipe_name = recipe
+    ctx.obj['OPERATION'] = operation
 
 @cli.command(help='Execute operation on all hosts in the layer at once')
 @click.option('--stack-name', type=click.STRING, required=True, help='OpsWorks Stack name')
