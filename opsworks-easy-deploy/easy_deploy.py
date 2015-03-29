@@ -350,15 +350,6 @@ class Rollback(Deploy):
     def command(self):
         return 'rollback'
 
-    def _create_deployment_arguments(self, instance_ids, comment):
-        return {
-            'stack_id': self.stack_id,
-            'app_id': self.application_id,
-            'instance_ids': instance_ids,
-            'command': {'Name': self.command},
-            'comment': comment
-        }
-
 
 class ExecuteRecipe(Operation):
     """
